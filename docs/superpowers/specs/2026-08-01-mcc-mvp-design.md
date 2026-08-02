@@ -95,6 +95,8 @@ Admin cấu hình các group do chủ dự án cung cấp. Chủ dự án chịu
 
 Connector lọc tín hiệu MCC, che PII trước khi xử lý, trích xuất candidate theo JSON schema, rồi tạo staging record có permalink và provenance. API capability không thay thế việc xác nhận quyền của Admin group. Khi tắt nguồn, connector dừng và các observation mang source đó có thể bị ẩn mà vẫn giữ audit trail theo chính sách lưu giữ.
 
+Meta đã gỡ Facebook Groups API khỏi mọi version từ ngày 2024-04-22. Vì vậy connector group là capability-gated: chỉ được triển khai khi chủ dự án chứng minh một API/product chính thức hiện hành, endpoint, permission, App Review và quyền truy cập group phù hợp. Nếu capability đó không tồn tại, source phải giữ trạng thái disabled, không được dùng scraper/browser automation hoặc cách lấy token không được hỗ trợ, và cần một sửa đổi spec riêng để chọn nguồn thay thế hợp lệ như luồng import dữ liệu do operator cung cấp.
+
 ### 4.3. Ngân hàng
 
 Hằng ngày, adapter tải HTML/PDF từ VPBank, Techcombank, VIB, UOB, HSBC, Cake, Shinhan và TPBank; phát hiện thay đổi bằng hash. Nội dung được trích xuất thành `bank_mcc_policy` để phục vụ giai đoạn gợi ý thẻ sau này. Nó không được coi là bằng chứng merchant-to-MCC.
@@ -221,10 +223,12 @@ MVP phải có bộ tài liệu onboarding có thể thực hiện tuần tự, 
 
 ```text
 docs/resources/README.md                  mục lục, thứ tự setup và readiness checklist
+docs/resources/dependency-catalog.md       dependency, version, purpose, license, credential
 docs/resources/local-development.md       Node.js, pnpm, Python, Docker
+docs/resources/application-frameworks.md  Next.js, NestJS, FastAPI và cấu trúc project
 docs/resources/database-and-drizzle.md    PostgreSQL, PostGIS, Drizzle ORM/Kit
 docs/resources/mapbox.md                  account, token, map integration
-docs/resources/google-oauth.md            OAuth consent, client ID/secret, redirect URI
+docs/resources/google-oauth.md            OAuth consent, client ID, origin và token verification
 docs/resources/facebook-graph-api.md      app, token, permission, group/source setup
 docs/resources/llm-providers.md            Gemini, Groq, OpenRouter và fallback
 docs/architecture/system-overview.md      container/dependency/deployment diagrams
@@ -263,6 +267,6 @@ Theo yêu cầu, MVP không có unit, integration hay E2E test tự động. Tr�
 - Ít nhất 5.000 merchant location có tọa độ trên toàn Việt Nam.
 - Ít nhất 500 MCC observation ở trạng thái `approved`.
 - Tám ngân hàng có source registry và ingestion policy.
-- Social ingestion cho các group do chủ dự án cấu hình.
+- Social ingestion dùng capability chính thức đã được xác minh; nếu Meta không hỗ trợ group access, phải có quyết định thay thế được người dùng duyệt trước khi tuyên bố hoàn thành MVP.
 - Search map-first, report cộng đồng, Admin staging review và SEO store page hoạt động.
 - Bộ resource guide và sơ đồ Mermaid được hoàn thành, liên kết từ README và đã kiểm tra theo onboarding checklist.
