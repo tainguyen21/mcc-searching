@@ -1,0 +1,26 @@
+<h2>Chọn trải nghiệm tra cứu trên điện thoại</h2>
+<p class="subtitle">Desktop giữ bố cục bản đồ + danh sách song song. Trên màn hình nhỏ, phương án nào nên là mặc định?</p>
+
+<div class="cards">
+  <div class="card" data-choice="mobile-map-sheet" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#eef4ff;display:flex;justify-content:center">
+      <div style="width:205px;height:350px;border:5px solid #0f172a;border-radius:22px;overflow:hidden;background:linear-gradient(135deg,#dbeafe,#dcfce7);position:relative;text-align:left;font-size:9px;color:#334155">
+        <div style="position:absolute;left:10px;right:10px;top:12px;background:white;border-radius:8px;padding:8px;box-shadow:0 2px 8px rgba(15,23,42,.18)">🔎 Highlands hoặc 5812</div>
+        <span style="position:absolute;left:82px;top:102px;background:#2563eb;color:#fff;border-radius:50%;padding:6px">1</span><span style="position:absolute;left:128px;top:154px;background:#2563eb;color:#fff;border-radius:50%;padding:6px">2</span><span style="position:absolute;left:56px;top:190px;background:#2563eb;color:#fff;border-radius:50%;padding:6px">3</span>
+        <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:15px 15px 0 0;padding:12px;box-shadow:0 -3px 12px rgba(15,23,42,.16)"><b style="color:#0f172a">28 địa điểm gần bạn</b><div style="margin-top:8px;border-top:1px solid #e2e8f0;padding-top:7px"><b style="color:#0f172a">Highlands Coffee</b><br>5812 · POS · 0,4 km</div><div style="margin-top:6px"><b style="color:#0f172a">Phở Hòa</b><br>5812 · POS · 1,2 km</div></div>
+      </div>
+    </div>
+    <div class="card-body"><h3>A. Bản đồ toàn màn hình + bottom sheet</h3><p>Phù hợp định vị và khám phá; kéo sheet để xem thêm kết quả.</p></div>
+  </div>
+  <div class="card" data-choice="mobile-tabs" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f8fafc;display:flex;justify-content:center">
+      <div style="width:205px;height:350px;border:5px solid #0f172a;border-radius:22px;overflow:hidden;background:#fff;position:relative;text-align:left;font-size:9px;color:#334155">
+        <div style="padding:12px 10px 7px"><div style="border:1px solid #94a3b8;border-radius:8px;padding:8px">🔎 Highlands hoặc 5812</div><div style="display:flex;margin-top:9px;border-bottom:1px solid #e2e8f0"><span style="padding:5px 18px;border-bottom:2px solid #2563eb;color:#1d4ed8;font-weight:700">Danh sách</span><span style="padding:5px 18px">Bản đồ</span></div></div>
+        <div style="padding:4px 10px"><div style="padding:10px 0;border-bottom:1px solid #e2e8f0"><b style="color:#0f172a;font-size:10px">Highlands Coffee</b><br><span>5812 · POS · 0,4 km</span><br><span style="color:#2563eb">Xem trên bản đồ →</span></div><div style="padding:10px 0;border-bottom:1px solid #e2e8f0"><b style="color:#0f172a;font-size:10px">Phở Hòa</b><br><span>5812 · POS · 1,2 km</span><br><span style="color:#2563eb">Xem trên bản đồ →</span></div><div style="padding:10px 0"><b style="color:#0f172a;font-size:10px">WinMart</b><br><span>5411 · POS · 1,6 km</span></div></div>
+      </div>
+    </div>
+    <div class="card-body"><h3>B. Tab Danh sách / Bản đồ</h3><p>Dễ quét kết quả bằng tên; người dùng chủ động chuyển sang bản đồ.</p></div>
+  </div>
+</div>
+
+<div class="section"><p><strong>Khuyến nghị của mình: A.</strong> Nó giữ được lợi thế “MCC theo vị trí”, nhưng danh sách vẫn luôn chỉ cách một thao tác kéo.</p></div>
