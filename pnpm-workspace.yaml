@@ -1,6 +1,7 @@
 packages:
   - apps/*
 allowBuilds:
-  '@nestjs/core': set this to true or false
-  sharp: set this to true or false
-  unrs-resolver: set this to true or false
+  '@nestjs/core': true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true

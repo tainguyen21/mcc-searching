@@ -40,4 +40,15 @@ python -m uvicorn app.main:app --reload --port 8000
 
 ## Later Tasks
 
+## Task 2: Drizzle Database Infrastructure
+
+- [ ] Run `pnpm --filter api db:check` with `DATABASE_URL` configured.
+- [ ] Start Docker Desktop's Linux engine, then run `docker compose up -d db`.
+- [ ] Run `pnpm --filter api db:migrate`.
+- [ ] Confirm `SELECT PostGIS_Version()` and the `pg_trgm` extension query both return values.
+- [ ] Start the API with a valid database connection and confirm `GET /health` returns `200 {"status":"ok"}`.
+- [ ] Stop PostgreSQL and confirm `GET /health` returns HTTP 503 without a connection string or stack trace.
+
+## Later Tasks
+
 - [ ] Add later task-specific verification sections here as their briefs are introduced.
