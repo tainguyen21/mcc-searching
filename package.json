@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "packageManager": "pnpm@11.0.0",
+  "scripts": {
+    "dev": "pnpm --parallel --stream dev",
+    "build": "pnpm --recursive build",
+    "lint": "pnpm --recursive lint",
+    "typecheck": "pnpm --recursive typecheck",
+    "verify": "pnpm lint && pnpm typecheck && pnpm build"
+  }
+}

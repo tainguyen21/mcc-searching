@@ -1,0 +1,12 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: mcc
+      POSTGRES_USER: mcc
+      POSTGRES_PASSWORD: mcc_local_only
+    ports: ["5432:5432"]
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+
+volumes:
+  postgres_data:
