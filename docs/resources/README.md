@@ -1,5 +1,7 @@
 # MCC Resource Hub
 
+Last verified: 2026-08-04
+
 Start here when bringing up the monorepo on a new machine.
 
 ## Ordered Reading

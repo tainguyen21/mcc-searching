@@ -1,5 +1,7 @@
 # Local Development
 
+Last verified: 2026-08-04
+
 Windows with WSL 2 support is the primary path for this repository. Install the tools below in order, then run the checkpoints exactly as written from the repository root.
 
 ## Official Install References

@@ -1,5 +1,7 @@
 # Application Frameworks
 
+Last verified: 2026-08-04
+
 The MCC MVP monorepo separates browser UI, HTTP APIs, and ingestion work by framework so each service can evolve independently while sharing a single onboarding path.
 
 ## Official References
