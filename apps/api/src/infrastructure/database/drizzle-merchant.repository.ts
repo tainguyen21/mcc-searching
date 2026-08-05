@@ -4,7 +4,6 @@ import {
   countDistinct,
   desc,
   eq,
-  ilike,
   isNotNull,
   sql,
   type SQL,
@@ -12,6 +11,7 @@ import {
 import type {
   MerchantRepository,
   MerchantSearchResult,
+  StoreDetail,
 } from '../../application/ports/merchant.repository';
 import { DomainError } from '../../domain/shared/domain-error';
 import type { PaymentChannel } from '../../domain/observation/observation-status';
@@ -23,6 +23,7 @@ import {
   merchantAliases,
   merchantLocations,
   merchants,
+  sources,
 } from './schema';
 
 @Injectable()
@@ -119,7 +120,17 @@ export class DrizzleMerchantRepository implements MerchantRepository {
     const normalizedQuery = input.query?.trim().toLocaleLowerCase('vi');
 
     if (normalizedQuery) {
-      conditions.push(ilike(merchants.normalizedName, `%${normalizedQuery}%`));
+      conditions.push(sql`
+        (
+          similarity(${merchants.normalizedName}, ${normalizedQuery}) > 0.18
+          OR EXISTS (
+            SELECT 1
+            FROM merchant_alias ma
+            WHERE ma.merchant_id = ${merchants.id}
+              AND similarity(ma.normalized_name, ${normalizedQuery}) > 0.18
+          )
+        )
+      `);
     }
 
     if (input.mccCode) {
@@ -128,6 +139,17 @@ export class DrizzleMerchantRepository implements MerchantRepository {
 
     if (input.categoryId) {
       conditions.push(eq(mccCodes.categoryId, input.categoryId));
+    }
+
+    if (input.latitude !== undefined && input.longitude !== undefined) {
+      const radiusMeters = (input.radiusKm ?? 5) * 1_000;
+      conditions.push(sql`
+        ST_DWithin(
+          ${merchantLocations.geo},
+          ST_SetSRID(ST_MakePoint(${input.longitude}, ${input.latitude}), 4326)::geography,
+          ${radiusMeters}
+        )
+      `);
     }
 
     const where = and(...conditions);
@@ -140,6 +162,13 @@ export class DrizzleMerchantRepository implements MerchantRepository {
         address: merchantLocations.address,
         latitude: sql<number>`ST_Y(${merchantLocations.geo}::geometry)`,
         longitude: sql<number>`ST_X(${merchantLocations.geo}::geometry)`,
+        distanceMeters:
+          input.latitude === undefined || input.longitude === undefined
+            ? sql<number | null>`NULL`
+            : sql<number>`ST_Distance(
+                ${merchantLocations.geo},
+                ST_SetSRID(ST_MakePoint(${input.longitude}, ${input.latitude}), 4326)::geography
+              )`,
         mccCode: mccCodes.code,
         channel: mccObservations.channel,
         confidence: mccObservations.confidence,
@@ -154,7 +183,16 @@ export class DrizzleMerchantRepository implements MerchantRepository {
       .innerJoin(mccCodes, eq(mccObservations.mccCodeId, mccCodes.id))
       .where(where)
       .orderBy(
-        desc(mccObservations.confidence),
+        input.latitude === undefined || input.longitude === undefined
+          ? desc(
+              normalizedQuery
+                ? sql`similarity(${merchants.normalizedName}, ${normalizedQuery})`
+                : mccObservations.confidence,
+            )
+          : sql`ST_Distance(
+              ${merchantLocations.geo},
+              ST_SetSRID(ST_MakePoint(${input.longitude}, ${input.latitude}), 4326)::geography
+            )`,
         desc(mccObservations.observedAt),
       )
       .limit(input.pageSize)
@@ -194,6 +232,9 @@ export class DrizzleMerchantRepository implements MerchantRepository {
         address: row.address,
         latitude: Number(row.latitude),
         longitude: Number(row.longitude),
+        ...(row.distanceMeters === null
+          ? {}
+          : { distanceMeters: Number(row.distanceMeters) }),
         observations: [observation],
       });
     }
@@ -201,6 +242,114 @@ export class DrizzleMerchantRepository implements MerchantRepository {
     return {
       items: [...itemsByLocation.values()],
       total: Number(totalRow.total),
+    };
+  }
+
+  async listMccCodes() {
+    return this.database
+      .select({
+        code: mccCodes.code,
+        englishName: mccCodes.englishName,
+        vietnameseName: mccCodes.vietnameseName,
+        categoryId: mccCodes.categoryId,
+        categoryName: mccCodes.categoryName,
+      })
+      .from(mccCodes)
+      .orderBy(mccCodes.code);
+  }
+
+  async listCategories(): Promise<Array<{ id: string; name: string }>> {
+    return this.database
+      .selectDistinct({
+        id: mccCodes.categoryId,
+        name: mccCodes.categoryName,
+      })
+      .from(mccCodes)
+      .orderBy(mccCodes.categoryName);
+  }
+
+  async findStoreBySlug(slug: string): Promise<StoreDetail | undefined> {
+    const rows = await this.database
+      .select({
+        locationId: merchantLocations.id,
+        displayName: merchantLocations.displayName,
+        address: merchantLocations.address,
+        province: merchantLocations.province,
+        latitude: sql<number | null>`ST_Y(${merchantLocations.geo}::geometry)`,
+        longitude: sql<number | null>`ST_X(${merchantLocations.geo}::geometry)`,
+        merchantName: merchants.canonicalName,
+        storeSlug: merchants.storeSlug,
+        mccCode: mccCodes.code,
+        mccName: mccCodes.vietnameseName,
+        channel: mccObservations.channel,
+        issuerBank: mccObservations.issuerBank,
+        cardNetwork: mccObservations.cardNetwork,
+        confidence: mccObservations.confidence,
+        observedAt: mccObservations.observedAt,
+        sourceName: sources.displayName,
+      })
+      .from(merchants)
+      .innerJoin(
+        merchantLocations,
+        eq(merchantLocations.merchantId, merchants.id),
+      )
+      .innerJoin(
+        mccObservations,
+        eq(mccObservations.merchantLocationId, merchantLocations.id),
+      )
+      .innerJoin(mccCodes, eq(mccCodes.id, mccObservations.mccCodeId))
+      .innerJoin(sources, eq(sources.id, mccObservations.sourceId))
+      .where(
+        and(
+          eq(merchants.storeSlug, slug),
+          eq(merchantLocations.isActive, true),
+          eq(mccObservations.status, 'approved'),
+        ),
+      )
+      .orderBy(
+        desc(mccObservations.confidence),
+        desc(mccObservations.observedAt),
+      );
+
+    const first = rows[0];
+    if (!first) {
+      return undefined;
+    }
+
+    const locationsById = new Map<string, StoreDetail['locations'][number]>();
+    for (const row of rows) {
+      const observation = {
+        mccCode: row.mccCode,
+        mccName: row.mccName ?? row.mccCode,
+        channel: row.channel as PaymentChannel,
+        issuerBank: row.issuerBank,
+        cardNetwork: row.cardNetwork,
+        confidence: row.confidence,
+        observedAt: row.observedAt?.toISOString() ?? null,
+        sourceName: row.sourceName,
+      };
+      const location = locationsById.get(row.locationId);
+
+      if (location) {
+        location.observations.push(observation);
+        continue;
+      }
+
+      locationsById.set(row.locationId, {
+        locationId: row.locationId,
+        displayName: row.displayName,
+        address: row.address,
+        province: row.province,
+        latitude: row.latitude === null ? null : Number(row.latitude),
+        longitude: row.longitude === null ? null : Number(row.longitude),
+        observations: [observation],
+      });
+    }
+
+    return {
+      merchantName: first.merchantName,
+      storeSlug: first.storeSlug,
+      locations: [...locationsById.values()],
     };
   }
 }

@@ -16,6 +16,29 @@ export interface MerchantSearchResult {
   }>;
 }
 
+export interface StoreDetail {
+  merchantName: string;
+  storeSlug: string;
+  locations: Array<{
+    locationId: string;
+    displayName: string | null;
+    address: string;
+    province: string | null;
+    latitude: number | null;
+    longitude: number | null;
+    observations: Array<{
+      mccCode: string;
+      mccName: string;
+      channel: PaymentChannel;
+      issuerBank: string | null;
+      cardNetwork: string | null;
+      confidence: number;
+      observedAt: string | null;
+      sourceName: string;
+    }>;
+  }>;
+}
+
 export interface MerchantSearchPort {
   search(input: {
     query?: string;
@@ -30,6 +53,17 @@ export interface MerchantSearchPort {
 }
 
 export interface MerchantRepository extends MerchantSearchPort {
+  listMccCodes(): Promise<
+    Array<{
+      code: string;
+      englishName: string;
+      vietnameseName: string | null;
+      categoryId: string;
+      categoryName: string;
+    }>
+  >;
+  listCategories(): Promise<Array<{ id: string; name: string }>>;
+  findStoreBySlug(slug: string): Promise<StoreDetail | undefined>;
   createMerchant(input: {
     canonicalName: string;
     normalizedName: string;
