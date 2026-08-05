@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { resolve } from 'node:path';
 import { DatabaseModule } from './infrastructure/database/database.module';
+import { AuthModule } from './presentation/http/auth/auth.module';
 import { HealthController } from './presentation/http/health.controller';
 
 @Module({
@@ -15,6 +16,7 @@ import { HealthController } from './presentation/http/health.controller';
       ],
     }),
     DatabaseModule,
+    AuthModule,
   ],
   controllers: [HealthController],
 })

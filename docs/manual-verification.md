@@ -49,6 +49,13 @@ python -m uvicorn app.main:app --reload --port 8000
 - [ ] Start the API with a valid database connection and confirm `GET /health` returns `200 {"status":"ok"}`.
 - [ ] Stop PostgreSQL and confirm `GET /health` returns HTTP 503 without a connection string or stack trace.
 
-## Later Tasks
+## Task 4: Google Authentication and Admin Boundary
+
+- [ ] Configure Google Identity Services using [google-oauth.md](resources/google-oauth.md).
+- [ ] Sign in with an allowlisted email and a non-allowlisted email; confirm both receive an MCC session.
+- [ ] Confirm `GET /auth/me` returns local id, display name, and role without Google token material.
+- [ ] Confirm only the allowlisted email can call an Admin endpoint once one is available.
+- [ ] Remove an allowlist entry and confirm the next Admin request returns HTTP 403.
+- [ ] Confirm `POST /auth/logout` clears the MCC session and `GET /auth/me` then returns HTTP 401.
 
 - [ ] Add later task-specific verification sections here as their briefs are introduced.

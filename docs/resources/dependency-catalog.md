@@ -1,6 +1,6 @@
 # Dependency Catalog
 
-Last verified: 2026-08-04
+Last verified: 2026-08-05
 
 This catalog lists every direct dependency declared by the current workspace manifests. Update it in the same change that adds, removes, or upgrades a direct dependency.
 
@@ -23,6 +23,8 @@ This catalog lists every direct dependency declared by the current workspace man
 | `rxjs` | 7.8.1 | API | Reactive primitives used by NestJS | [RxJS](https://rxjs.dev/) | Apache-2.0 | None |
 | `dotenv` | 17.4.2 | API tooling | Loads local environment files for Drizzle commands | [dotenv](https://github.com/motdotla/dotenv) | BSD-2-Clause | `DATABASE_URL` |
 | `drizzle-orm` | 0.45.2 | API infrastructure | Typed PostgreSQL query and transaction adapter | [Drizzle ORM](https://orm.drizzle.team/docs/overview) | Apache-2.0 | `DATABASE_URL` |
+| `google-auth-library` | 11.0.0 | API authentication | Verifies Google Identity Services ID tokens in the NestJS API | [Google Auth Library for Node.js](https://github.com/googleapis/google-auth-library-nodejs) | Apache-2.0 | `GOOGLE_CLIENT_ID` |
+| `jose` | 6.2.8 | API authentication | Signs and verifies short-lived API session JWTs | [JOSE](https://github.com/panva/jose) | MIT | `SESSION_SECRET` |
 | `pg` | 8.22.0 | API infrastructure | PostgreSQL connection pool and driver | [node-postgres](https://node-postgres.com/) | MIT | `DATABASE_URL` |
 | `@eslint/eslintrc` | 3.2.0 | API tooling | Legacy ESLint configuration helpers | [ESLint](https://eslint.org/docs/latest/) | MIT | None |
 | `@eslint/js` | 9.18.0 | API tooling | Base ESLint rule set | [ESLint](https://eslint.org/docs/latest/) | MIT | None |

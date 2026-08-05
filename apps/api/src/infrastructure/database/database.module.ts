@@ -4,6 +4,7 @@ import { DRIZZLE_DB, PG_POOL } from './database.constants';
 import { databaseProviders } from './database.provider';
 import { DrizzleMerchantRepository } from './drizzle-merchant.repository';
 import { DrizzleObservationRepository } from './drizzle-observation.repository';
+import { DrizzleUserRepository } from './drizzle-user.repository';
 
 @Global()
 @Module({
@@ -11,11 +12,13 @@ import { DrizzleObservationRepository } from './drizzle-observation.repository';
     ...databaseProviders,
     DrizzleMerchantRepository,
     DrizzleObservationRepository,
+    DrizzleUserRepository,
   ],
   exports: [
     DRIZZLE_DB,
     DrizzleMerchantRepository,
     DrizzleObservationRepository,
+    DrizzleUserRepository,
   ],
 })
 export class DatabaseModule implements OnApplicationShutdown {
