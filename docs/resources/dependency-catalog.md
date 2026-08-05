@@ -59,6 +59,9 @@ This catalog lists every direct dependency declared by the current workspace man
 | `httpx` | 0.28.1 | Ingestion | Timeout-bounded Internal API HTTP client | [HTTPX](https://www.python-httpx.org/) | BSD-3-Clause | `INTERNAL_API_KEY` |
 | `pydantic` | 2.11.7 | Ingestion | Validates normalized ingestion candidates | [Pydantic](https://docs.pydantic.dev/) | MIT | None |
 | `pydantic-settings` | 2.10.1 | Ingestion | Loads the worker-only environment contract | [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) | MIT | `INTERNAL_API_KEY` |
+| `google-genai` | 1.31.0 | Ingestion | Gemini JSON extraction adapter for bank documents | [Google Gen AI SDK](https://ai.google.dev/gemini-api/docs/libraries) | Apache-2.0 | `GEMINI_API_KEY`, `GEMINI_MODEL` |
+| `groq` | 0.31.0 | Ingestion | Groq JSON extraction fallback adapter | [Groq Python SDK](https://console.groq.com/docs/libraries) | Apache-2.0 | `GROQ_API_KEY`, `GROQ_MODEL` |
+| OpenRouter API | HTTP via `httpx` | Ingestion | Final strict-JSON fallback for bank documents | [OpenRouter](https://openrouter.ai/docs/quickstart) | Provider terms | `OPENROUTER_API_KEY`, `OPENROUTER_MODEL` |
 | Meta Graph API (Facebook Groups) | BLOCKED; Groups API removed April 22, 2024 | Ingestion / provider capability | No-network capability boundary; no group source is enabled without a new approved official-access ADR | [Graph API v19 changelog](https://developers.facebook.com/docs/graph-api/changelog/version19.0/) | Meta Platform Terms | No credential accepted while blocked |
 | `mypy` | 1.17.1 | Ingestion tooling | Static type checker | [mypy](https://mypy.readthedocs.io/) | MIT | None |
 | `ruff` | 0.12.8 | Ingestion tooling | Linter and formatter | [Ruff](https://docs.astral.sh/ruff/) | MIT | None |

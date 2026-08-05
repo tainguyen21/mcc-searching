@@ -12,3 +12,9 @@ class Settings(BaseSettings):
     internal_api_key: str
     internal_api_base_url: HttpUrl = "http://localhost:3001"
     request_timeout_seconds: float = 10
+    gemini_api_key: str | None = None
+    gemini_model: str | None = None
+    groq_api_key: str | None = None
+    groq_model: str | None = None
+    openrouter_api_key: str | None = None
+    openrouter_model: str | None = None

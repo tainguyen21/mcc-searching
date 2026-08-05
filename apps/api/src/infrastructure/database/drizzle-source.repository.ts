@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 import type {
   JobStatus,
   SourceRecord,
@@ -10,6 +10,8 @@ import { DRIZZLE_DB } from './database.constants';
 import type { AppDatabase } from './database.types';
 import {
   auditLogs,
+  bankDocuments,
+  bankMccPolicies,
   ingestionJobs,
   mccCodes,
   mccObservations,
@@ -283,6 +285,93 @@ export class DrizzleSourceRepository implements SourceRepository {
       });
 
       return { status: 'created', observationId: observation.id };
+    });
+  }
+
+  async receiveBankPolicy(input: {
+    sourceKey: string;
+    bankCode: string;
+    documentUrl: string;
+    documentHash: string;
+    effectiveFrom?: string;
+    effectiveTo?: string;
+    eligibleMccCodes: string[];
+    excludedMccCodes: string[];
+  }): Promise<{ status: 'created' | 'no_change'; bankDocumentId: string }> {
+    return this.database.transaction(async (transaction) => {
+      const [source] = await transaction
+        .select()
+        .from(sources)
+        .where(eq(sources.sourceKey, input.sourceKey))
+        .limit(1);
+      if (!source || source.type !== 'bank') {
+        throw new DomainError('BANK_SOURCE_NOT_FOUND', 404);
+      }
+      if (!source.enabled) {
+        throw new DomainError('SOURCE_DISABLED', 409);
+      }
+
+      const [existingDocument] = await transaction
+        .select({ id: bankDocuments.id })
+        .from(bankDocuments)
+        .where(
+          and(
+            eq(bankDocuments.sourceId, source.id),
+            eq(bankDocuments.documentHash, input.documentHash),
+          ),
+        )
+        .limit(1);
+      if (existingDocument) {
+        return { status: 'no_change', bankDocumentId: existingDocument.id };
+      }
+
+      const [document] = await transaction
+        .insert(bankDocuments)
+        .values({
+          sourceId: source.id,
+          bankCode: input.bankCode,
+          documentUrl: input.documentUrl,
+          documentHash: input.documentHash,
+          effectiveFrom: input.effectiveFrom,
+          effectiveTo: input.effectiveTo,
+        })
+        .returning({ id: bankDocuments.id });
+
+      const codes = [
+        ...new Set([...input.eligibleMccCodes, ...input.excludedMccCodes]),
+      ];
+      const rows = await transaction
+        .select({ id: mccCodes.id, code: mccCodes.code })
+        .from(mccCodes)
+        .where(inArray(mccCodes.code, codes));
+      if (rows.length !== codes.length) {
+        throw new DomainError('UNKNOWN_MCC_CODE');
+      }
+
+      const codeId = new Map(rows.map((row) => [row.code, row.id]));
+      const policies = [
+        ...input.eligibleMccCodes.map((code) => ({
+          bankDocumentId: document.id,
+          mccCodeId: codeId.get(code)!,
+          policyType: 'eligible' as const,
+        })),
+        ...input.excludedMccCodes.map((code) => ({
+          bankDocumentId: document.id,
+          mccCodeId: codeId.get(code)!,
+          policyType: 'excluded' as const,
+        })),
+      ];
+      if (policies.length > 0) {
+        await transaction.insert(bankMccPolicies).values(policies);
+      }
+
+      await transaction.insert(auditLogs).values({
+        action: 'created',
+        entityType: 'bank_document',
+        entityId: document.id,
+        metadata: { sourceKey: input.sourceKey, bankCode: input.bankCode },
+      });
+      return { status: 'created', bankDocumentId: document.id };
     });
   }
 }

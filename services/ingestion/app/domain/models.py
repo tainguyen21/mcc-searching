@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Literal
 
 from pydantic import BaseModel, Field, HttpUrl, field_validator
@@ -36,3 +36,20 @@ class NormalizedCandidate(BaseModel):
         if not stripped:
             raise ValueError("merchant_name must not be blank")
         return stripped
+
+
+class ExtractedBankPolicy(BaseModel):
+    bank_code: str = Field(min_length=1, max_length=50)
+    document_url: HttpUrl
+    document_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
+    effective_from: date | None = None
+    effective_to: date | None = None
+    eligible_mcc_codes: list[str] = Field(default_factory=list)
+    excluded_mcc_codes: list[str] = Field(default_factory=list)
+
+    @field_validator("eligible_mcc_codes", "excluded_mcc_codes")
+    @classmethod
+    def mcc_codes_are_four_digits(cls, values: list[str]) -> list[str]:
+        if any(len(value) != 4 or not value.isdigit() for value in values):
+            raise ValueError("every MCC code must be four digits")
+        return sorted(set(values))

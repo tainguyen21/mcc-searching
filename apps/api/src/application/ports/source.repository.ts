@@ -50,4 +50,14 @@ export interface SourceRepository {
     status: 'created' | 'duplicate' | 'ignored';
     observationId?: string;
   }>;
+  receiveBankPolicy(input: {
+    sourceKey: string;
+    bankCode: string;
+    documentUrl: string;
+    documentHash: string;
+    effectiveFrom?: string;
+    effectiveTo?: string;
+    eligibleMccCodes: string[];
+    excludedMccCodes: string[];
+  }): Promise<{ status: 'created' | 'no_change'; bankDocumentId: string }>;
 }
