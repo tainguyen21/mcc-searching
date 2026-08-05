@@ -24,6 +24,6 @@ import { AuthGuard } from './auth.guard';
       ) => new SignInWithGoogleUseCase(googleIdentity, users, sessions),
     },
   ],
-  exports: [AuthGuard, AdminGuard],
+  exports: [AuthGuard, AdminGuard, JwtSessionAdapter],
 })
 export class AuthModule {}
