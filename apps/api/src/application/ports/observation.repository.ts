@@ -27,6 +27,16 @@ export interface ObservationRecord {
 }
 
 export interface ObservationRepository {
+  findMccCodeIdByCode(code: string): Promise<string | undefined>;
+  createCommunityReport(input: {
+    userId: string;
+    merchantName: string;
+    address: string;
+    mccCodeId: string;
+    issuerBank: string;
+    channel: PaymentChannel;
+    confidence: Confidence;
+  }): Promise<{ observation: ObservationRecord; duplicate: boolean }>;
   create(input: {
     sourceId: string;
     mccCodeId: string;
@@ -41,6 +51,8 @@ export interface ObservationRepository {
     evidenceSnippet?: string;
     observedAt?: Date;
   }): Promise<ObservationRecord>;
+  findById(id: string): Promise<ObservationRecord | undefined>;
+  hasGeocodedLocation(locationId: string): Promise<boolean>;
   listForAdmin(input: {
     statuses: ObservationStatus[];
     page: number;

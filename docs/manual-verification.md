@@ -58,4 +58,15 @@ python -m uvicorn app.main:app --reload --port 8000
 - [ ] Remove an allowlist entry and confirm the next Admin request returns HTTP 403.
 - [ ] Confirm `POST /auth/logout` clears the MCC session and `GET /auth/me` then returns HTTP 401.
 
+## Task 5: Community Reports and Admin Review
+
+- [ ] Submit a report as a normal authenticated user and confirm it creates a `staging` observation with the `community` source.
+- [ ] Submit the same user/merchant/MCC/channel report within seven days and confirm it returns the existing observation as a duplicate.
+- [ ] Confirm an unknown or non-four-digit MCC is rejected before the report use case runs.
+- [ ] Confirm a staging report is absent from public search once search is available.
+- [ ] As Admin, reject without a reason and confirm validation fails; reject with a reason and inspect the audit entry.
+- [ ] Confirm an offline observation cannot be approved until its location has WGS84 coordinates.
+- [ ] Approve a geocoded report, then hide it; confirm its audit history remains.
+- [ ] Merge two locations and confirm aliases and observations move together without deleting source data.
+
 - [ ] Add later task-specific verification sections here as their briefs are introduced.

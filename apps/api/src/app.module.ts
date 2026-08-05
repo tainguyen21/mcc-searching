@@ -4,6 +4,8 @@ import { resolve } from 'node:path';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { AuthModule } from './presentation/http/auth/auth.module';
 import { HealthController } from './presentation/http/health.controller';
+import { ReportsModule } from './presentation/http/reports/reports.module';
+import { ReviewModule } from './presentation/http/review/review.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { HealthController } from './presentation/http/health.controller';
     }),
     DatabaseModule,
     AuthModule,
+    ReportsModule,
+    ReviewModule,
   ],
   controllers: [HealthController],
 })
