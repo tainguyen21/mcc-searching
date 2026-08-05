@@ -4,6 +4,7 @@ import { DRIZZLE_DB, PG_POOL } from './database.constants';
 import { databaseProviders } from './database.provider';
 import { DrizzleMerchantRepository } from './drizzle-merchant.repository';
 import { DrizzleObservationRepository } from './drizzle-observation.repository';
+import { DrizzleSourceRepository } from './drizzle-source.repository';
 import { DrizzleUserRepository } from './drizzle-user.repository';
 
 @Global()
@@ -12,12 +13,14 @@ import { DrizzleUserRepository } from './drizzle-user.repository';
     ...databaseProviders,
     DrizzleMerchantRepository,
     DrizzleObservationRepository,
+    DrizzleSourceRepository,
     DrizzleUserRepository,
   ],
   exports: [
     DRIZZLE_DB,
     DrizzleMerchantRepository,
     DrizzleObservationRepository,
+    DrizzleSourceRepository,
     DrizzleUserRepository,
   ],
 })
