@@ -1,65 +1,111 @@
-import Image from "next/image";
+"use client";
+
+import { useCallback, useState } from "react";
+import Link from "next/link";
+import { MerchantMap } from "@/components/map/merchant-map";
+import { LocationPicker } from "@/components/map/location-picker";
+import { SearchBar } from "@/components/search/search-bar";
+import { SearchFilters } from "@/components/search/search-filters";
+import { SearchResults } from "@/components/search/search-results";
+import {
+  type MerchantSearchResult,
+  searchMerchants,
+} from "@/lib/api-client";
 
 export default function Home() {
+  const [query, setQuery] = useState("");
+  const [mccCode, setMccCode] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [radiusKm, setRadiusKm] = useState("5");
+  const [province, setProvince] = useState("");
+  const [manualAddress, setManualAddress] = useState("");
+  const [location, setLocation] = useState<{ latitude: number; longitude: number }>();
+  const [items, setItems] = useState<MerchantSearchResult[]>([]);
+  const [selectedId, setSelectedId] = useState<string>();
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  const runSearch = useCallback(async (locationOverride?: { latitude: number; longitude: number }) => {
+    const activeLocation = locationOverride ?? location;
+    setStatus("loading");
+    setMessage("");
+    try {
+      const response = await searchMerchants({
+        query: query || undefined,
+        mccCode: mccCode || undefined,
+        categoryId: categoryId || undefined,
+        latitude: activeLocation?.latitude?.toString(),
+        longitude: activeLocation?.longitude?.toString(),
+        radiusKm: activeLocation ? radiusKm : undefined,
+      });
+      const filtered = province
+        ? response.items.filter((item) =>
+            item.address.toLocaleLowerCase("vi").includes(province.toLocaleLowerCase("vi")),
+          )
+        : response.items;
+      setItems(filtered);
+      setSelectedId(filtered[0]?.locationId);
+      if (filtered.length === 0) {
+        setMessage("Chưa có địa điểm phù hợp. Bạn có thể gửi báo cáo để cộng đồng cùng cập nhật.");
+      }
+      setStatus("idle");
+    } catch {
+      setStatus("error");
+      setMessage("Không thể tải kết quả. Kiểm tra API rồi thử lại.");
+    }
+  }, [categoryId, location, mccCode, province, query, radiusKm]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="mcc-shell">
+      <header className="mcc-header">
+        <Link className="brand" href="/">
+          MCC Map
+          <span>Vietnam</span>
+        </Link>
+        <nav aria-label="Main navigation">
+          <a href="/report">Báo cáo</a>
+          <a href="/admin">Quản trị</a>
+        </nav>
+      </header>
+
+      <section className="search-panel" aria-label="Merchant search">
+      <SearchBar value={query} onChange={setQuery} onSubmit={() => void runSearch()} />
+        <SearchFilters
+          mccCode={mccCode}
+          categoryId={categoryId}
+          radiusKm={radiusKm}
+          province={province}
+          onMccCodeChange={setMccCode}
+          onCategoryIdChange={setCategoryId}
+          onRadiusKmChange={setRadiusKm}
+          onProvinceChange={setProvince}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+        <LocationPicker
+          address={manualAddress}
+          onAddressChange={setManualAddress}
+          onLocationChange={setLocation}
+          onLocate={(nextLocation) => void runSearch(nextLocation)}
+        />
+      </section>
+
+      <section className="workspace">
+        <div className="map-region">
+          <MerchantMap
+            items={items}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        <aside className="results-sheet">
+          <SearchResults
+            items={items}
+            selectedId={selectedId}
+            status={status}
+            message={message}
+            onSelect={setSelectedId}
+          />
+        </aside>
+      </section>
+    </main>
   );
 }

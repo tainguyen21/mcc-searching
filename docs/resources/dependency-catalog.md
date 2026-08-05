@@ -56,5 +56,9 @@ This catalog lists every direct dependency declared by the current workspace man
 | Python | 3.12.x required | Ingestion runtime / platform | Runs the FastAPI ingestion worker and Python tooling | [Python](https://docs.python.org/3/) | PSF-2.0 | None |
 | FastAPI | 0.116.1 | Ingestion | Worker-facing HTTP surface and ingestion orchestration | [FastAPI](https://fastapi.tiangolo.com/) | MIT | `INTERNAL_API_KEY`, `FACEBOOK_ACCESS_TOKEN`, `FACEBOOK_INGESTION_MODE`, `GEMINI_API_KEY`, `GEMINI_MODEL`, `GROQ_API_KEY`, `GROQ_MODEL`, `OPENROUTER_API_KEY`, `OPENROUTER_MODEL` |
 | `uvicorn[standard]` | 0.35.0 | Ingestion | ASGI server for FastAPI | [Uvicorn](https://www.uvicorn.org/) | BSD-3-Clause | None |
+| `httpx` | 0.28.1 | Ingestion | Timeout-bounded Internal API HTTP client | [HTTPX](https://www.python-httpx.org/) | BSD-3-Clause | `INTERNAL_API_KEY` |
+| `pydantic` | 2.11.7 | Ingestion | Validates normalized ingestion candidates | [Pydantic](https://docs.pydantic.dev/) | MIT | None |
+| `pydantic-settings` | 2.10.1 | Ingestion | Loads the worker-only environment contract | [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) | MIT | `INTERNAL_API_KEY` |
+| Meta Graph API (Facebook Groups) | BLOCKED; Groups API removed April 22, 2024 | Ingestion / provider capability | No-network capability boundary; no group source is enabled without a new approved official-access ADR | [Graph API v19 changelog](https://developers.facebook.com/docs/graph-api/changelog/version19.0/) | Meta Platform Terms | No credential accepted while blocked |
 | `mypy` | 1.17.1 | Ingestion tooling | Static type checker | [mypy](https://mypy.readthedocs.io/) | MIT | None |
 | `ruff` | 0.12.8 | Ingestion tooling | Linter and formatter | [Ruff](https://docs.astral.sh/ruff/) | MIT | None |

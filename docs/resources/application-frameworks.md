@@ -1,6 +1,6 @@
 # Application Frameworks
 
-Last verified: 2026-08-04
+Last verified: 2026-08-05
 
 The MCC MVP monorepo separates browser UI, HTTP APIs, and ingestion work by framework so each service can evolve independently while sharing a single onboarding path.
 
@@ -14,7 +14,7 @@ The MCC MVP monorepo separates browser UI, HTTP APIs, and ingestion work by fram
 
 - `apps/web` is the Next.js App Router frontend. It owns browser rendering, public routes, and browser-safe environment variables.
 - `apps/api` is the NestJS HTTP API. It owns external API routes, internal API routes, auth integration, and application orchestration. The bootstrap defaults to port `3001` so the local runtime matches `NEXT_PUBLIC_API_BASE_URL`.
-- `services/ingestion` is the FastAPI ingestion worker. It will own provider-specific ingestion flows and internal API handoffs in later tasks.
+- `services/ingestion` is the FastAPI ingestion worker. It redacts source text, validates normalized candidates, and calls the NestJS Internal API using `X-API-KEY`.
 
 ## Official Scaffold Commands
 
@@ -41,10 +41,20 @@ pnpm dlx @nestjs/cli@latest new apps/api --package-manager pnpm --skip-git --str
 
 ### FastAPI (`services/ingestion`)
 
-- Start: `python -m uvicorn app.main:app --reload --port 8000`
+- Create the required Python 3.12 environment:
+
+  ```powershell
+  py -3.12 -m venv .venv
+  .\.venv\Scripts\Activate.ps1
+  python -m pip install --upgrade pip
+  python -m pip install -e services/ingestion
+  ```
+
+- Start: `python -m uvicorn app.main:app --app-dir services/ingestion --host 127.0.0.1 --port 8000`
 - Build: `python -m compileall services/ingestion`
 - Typecheck: `python -m mypy services/ingestion`
 - Lint: `python -m ruff check services/ingestion`
+- Health check: `Invoke-RestMethod http://127.0.0.1:8000/health`
 
 ## Dependency Direction
 
@@ -61,4 +71,5 @@ flowchart LR
 
 - The web app talks to the API over HTTP and never reaches directly into database or ingestion concerns.
 - The ingestion worker talks to the API through internal endpoints and never reaches into Next.js code.
+- The worker must never receive `DATABASE_URL`; its only persistence boundary is the authenticated NestJS Internal API.
 - Application and domain logic stay inside the API service boundary until later tasks extract shared libraries on purpose.

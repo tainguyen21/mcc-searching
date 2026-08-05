@@ -69,4 +69,30 @@ python -m uvicorn app.main:app --reload --port 8000
 - [ ] Approve a geocoded report, then hide it; confirm its audit history remains.
 - [ ] Merge two locations and confirm aliases and observations move together without deleting source data.
 
-- [ ] Add later task-specific verification sections here as their briefs are introduced.
+## Task 10: Facebook Group Capability Gate
+
+- [ ] Read [ADR 0001](decisions/0001-facebook-group-ingestion.md) and confirm it is `BLOCKED` because Meta removed the Facebook Groups API from all Graph API versions on April 22, 2024 and no owner-supplied official-access evidence exists.
+- [ ] Confirm `FACEBOOK_INGESTION_MODE=disabled` and that `FACEBOOK_ACCESS_TOKEN` is empty in the local environment.
+- [ ] From `services/ingestion`, start the worker with `py -3.12 -m uvicorn app.main:app --port 8000`.
+- [ ] Call `GET /facebook/capability` and confirm HTTP 200 with `status: "unsupported_provider_capability"`, `capability: "blocked"`, `scheduling: "skipped"`, and `jobCreated: false`.
+- [ ] Run the following no-network adapter check and confirm it prints `unsupported_provider_capability`:
+
+```powershell
+Push-Location services/ingestion
+$env:PYTHONPATH = (Get-Location).Path
+@'
+import asyncio
+from app.infrastructure.facebook_client import FacebookClient
+
+result = asyncio.run(
+    FacebookClient().fetch_group_items(group_id="redacted", cursor=None)
+)
+assert result.status == "unsupported_provider_capability"
+assert result.items == ()
+print(result.status)
+'@ | py -3.12 -
+Pop-Location
+```
+
+- [ ] Confirm no Facebook source job is scheduled or created, and that no Facebook request, browser automation, scraping, image processing, profile collection, or token logging occurs.
+- [ ] Confirm the only permitted next step is a user-approved specification amendment for a compliant replacement source, unless all required official Meta evidence is supplied and a new ADR is approved.
