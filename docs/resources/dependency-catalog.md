@@ -49,6 +49,7 @@ This catalog lists every direct dependency declared by the current workspace man
 | Next.js | 16.2.12 | Web | App Router frontend | [Next.js](https://nextjs.org/docs/app) | MIT | `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_WEB_ORIGIN`, `NEXT_PUBLIC_GOOGLE_CLIENT_ID`, `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` |
 | React | 19.2.4 | Web | Browser UI runtime | [React](https://react.dev/) | MIT | None |
 | `react-dom` | 19.2.4 | Web | React DOM renderer | [React](https://react.dev/) | MIT | None |
+| `mapbox-gl` | 3.27.0 | Web | Interactive browser map, markers, and camera controls | [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) | BSD-3-Clause | `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` |
 | `@tailwindcss/postcss` | 4.3.3 | Web tooling | Tailwind PostCSS integration | [Tailwind CSS](https://tailwindcss.com/docs) | MIT | None |
 | `@types/react` | 19.2.18 | Web tooling | React TypeScript declarations | [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) | MIT | None |
 | `@types/react-dom` | 19.2.4 | Web tooling | React DOM TypeScript declarations | [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) | MIT | None |

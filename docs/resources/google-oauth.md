@@ -59,6 +59,17 @@ Google Identity Services signs a person in to the MCC web app. The browser obtai
 
 6. NestJS verifies the token audience against `GOOGLE_CLIENT_ID`, writes the HTTP-only `mcc_session` cookie, and returns only the local user profile. `GET /auth/me` hydrates the web UI. `POST /auth/logout` removes the local cookie.
 
+## Browser Integration
+
+1. The Next.js Google control loads Google Identity Services only when
+   `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is configured.
+2. The returned credential is sent directly to `POST /auth/google`; it is never written to
+   local storage, session storage, or a browser cookie.
+3. The UI refreshes its local state from `GET /auth/me`, which contains only the MCC user ID,
+   display name, and local role.
+4. Local sign-out calls `POST /auth/logout` and clears the MCC API session. It does not attempt
+   to manage the person’s separate Google browser session.
+
 ## Role and Access Rules
 
 - Every authenticated Google identity gets the local `user` role unless its normalized email exactly matches `ADMIN_EMAIL_ALLOWLIST`.

@@ -18,7 +18,9 @@
     "db:generate": "drizzle-kit generate --config drizzle.config.ts",
     "db:check": "drizzle-kit check --config drizzle.config.ts",
     "db:migrate": "tsx src/infrastructure/database/migrate.ts",
-    "db:studio": "drizzle-kit studio --config drizzle.config.ts"
+    "db:studio": "drizzle-kit studio --config drizzle.config.ts",
+    "seed:mcc": "tsx scripts/seed-mcc.ts",
+    "seed:locations": "tsx scripts/seed-locations.ts"
   },
   "dependencies": {
     "@nestjs/common": "11.0.1",

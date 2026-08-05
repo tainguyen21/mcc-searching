@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { MerchantSearchResult } from "@/lib/api-client";
 
 type Props = {
@@ -21,7 +22,7 @@ export function SearchResults({ items, selectedId, status, message, onSelect }: 
     return (
       <div className="empty-state">
         <p>{message || "Nhập tìm kiếm để xem các địa điểm đã được duyệt."}</p>
-        <a href="/report">Gửi báo cáo MCC</a>
+        <Link href="/reports">Gửi báo cáo MCC</Link>
       </div>
     );
   }

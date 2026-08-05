@@ -96,3 +96,25 @@ Pop-Location
 
 - [ ] Confirm no Facebook source job is scheduled or created, and that no Facebook request, browser automation, scraping, image processing, profile collection, or token logging occurs.
 - [ ] Confirm the only permitted next step is a user-approved specification amendment for a compliant replacement source, unless all required official Meta evidence is supplied and a new ADR is approved.
+
+## Task 9: Bank Policy Ingestion
+
+- [ ] Configure one bank source with an operator-approved document URL, then submit its policy through `POST /internal/ingestion/bank-policies`.
+- [ ] Run the same document hash twice and confirm the second request returns `no_change`.
+- [ ] Simulate malformed JSON, timeout, quota, and auth failures; confirm Gemini, Groq, then OpenRouter are attempted without sending a partial policy.
+- [ ] Confirm `BankDocument` and `BankMccPolicy` rows exist while public `/search` results remain unchanged.
+
+## Task 11: Map Search
+
+- [ ] Search by MCC, a misspelled merchant name, category, and a 1-50 km coordinate radius.
+- [ ] Reject browser GPS permission and confirm the manual location control remains usable.
+- [ ] Select a result and its map pin in both directions, then confirm an empty result offers the report action.
+
+## Task 13: Release Acceptance
+
+- [ ] Run `pnpm --filter api seed:mcc`, import an operator CSV, and record imported/rejected totals.
+- [ ] Confirm 5,000 geocoded locations and 500 approved observations before an MVP release decision.
+- [ ] Record a 100,000-row 5 km PostGIS benchmark under 300 ms.
+- [ ] Perform a backup and restore against a non-production database.
+- [ ] Render every Mermaid diagram and complete each resource guide from a clean shell.
+- [ ] Record release as incomplete while ADR 0001 remains `BLOCKED` without a user-approved replacement source.

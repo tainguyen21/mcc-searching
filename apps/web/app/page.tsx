@@ -63,8 +63,8 @@ export default function Home() {
           <span>Vietnam</span>
         </Link>
         <nav aria-label="Main navigation">
-          <a href="/report">Báo cáo</a>
-          <a href="/admin">Quản trị</a>
+          <Link href="/reports">Báo cáo</Link>
+          <Link href="/admin">Quản trị</Link>
         </nav>
       </header>
 

@@ -33,4 +33,59 @@ button, input, select { font: inherit; }
 .result-meta { color: var(--coral); font-weight: 700; }
 .result-state, .empty-state { padding: 24px; margin: 0; }
 .error { color: #a22d1c; }.empty-state a { color: var(--teal); font-weight: 700; text-decoration: none; }
-@media (max-width: 760px) { .mcc-header, .search-panel { padding-left: 14px; padding-right: 14px; } .mcc-header nav { gap: 12px; } .search-filters input, .search-filters select { width: calc(50% - 4px); } .workspace { display: block; position: relative; } .map-region, .merchant-map { min-height: calc(100vh - 252px); } .results-sheet { max-height: 42vh; overflow: auto; border-left: 0; border-top: 1px solid var(--line); } }
+.content-shell { min-height: 100vh; background: var(--surface); }
+.content-panel, .store-page { width: min(980px, calc(100% - 48px)); margin: 32px auto; }
+.content-panel { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 28px; }
+.panel-heading { max-width: 640px; margin-bottom: 24px; }
+.panel-heading h1, .store-page h1, .admin-home h1 { margin: 4px 0 8px; font-size: 30px; line-height: 1.15; letter-spacing: 0; }
+.panel-heading p:last-child, .store-intro, .admin-home > p { color: var(--muted); margin: 0; line-height: 1.5; }
+.eyebrow { margin: 0; color: var(--teal); font-size: 13px; font-weight: 800; letter-spacing: 0; text-transform: uppercase; }
+.google-sign-in, .session-control { margin: 0 0 20px; }
+.session-control { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; }
+.session-control button, .admin-actions button, .merge-form button, .report-form > button { min-height: 40px; padding: 0 14px; border: 0; border-radius: 5px; background: var(--teal); color: #fff; cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .55; }
+.report-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; max-width: 760px; }
+.report-form label, .merge-form label { display: grid; gap: 7px; color: var(--ink); font-size: 14px; font-weight: 700; }
+.report-form input, .merge-form input { width: 100%; min-height: 40px; border: 1px solid #c6d3cf; border-radius: 5px; padding: 0 12px; background: #fff; color: var(--ink); }
+.report-form fieldset { grid-column: 1 / -1; display: flex; gap: 16px; align-items: center; margin: 0; padding: 12px; border: 1px solid var(--line); border-radius: 5px; }
+.report-form fieldset label { display: inline-flex; align-items: center; gap: 7px; font-weight: 400; }
+.report-form > button, .form-message { grid-column: 1 / -1; justify-self: start; }
+.form-message { margin: 0; color: var(--muted); font-size: 14px; }
+.form-message p { margin: 0 0 4px; }
+.form-message.error { color: #a22d1c; }
+.form-message.success { color: #0f6b4e; }
+.store-page { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 32px; }
+.store-intro { margin-bottom: 28px; }
+.store-locations { display: grid; gap: 18px; }
+.store-location { padding-top: 22px; border-top: 1px solid var(--line); }
+.store-location h2 { margin: 0 0 6px; font-size: 20px; }
+.store-location p { margin: 3px 0; color: var(--muted); }
+.store-location a { color: var(--teal); font-size: 14px; font-weight: 700; text-decoration: none; }
+.observation-table-wrap { margin-top: 18px; overflow-x: auto; }
+.observation-table { width: 100%; border-collapse: collapse; min-width: 650px; }
+.observation-table th, .observation-table td { border-bottom: 1px solid var(--line); padding: 12px 10px; text-align: left; vertical-align: top; font-size: 14px; }
+.observation-table th { color: var(--muted); font-weight: 700; }
+.observation-table td span { display: block; margin-top: 3px; color: var(--muted); }
+.empty-copy { color: var(--muted); }
+.admin-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+.admin-links a { display: grid; gap: 5px; min-height: 116px; padding: 18px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); text-decoration: none; }
+.admin-links a:hover { border-color: var(--teal); background: #ecf7f5; }
+.admin-links span { color: var(--muted); font-size: 14px; line-height: 1.4; }
+.admin-stack { display: grid; gap: 18px; }
+.staging-list, .source-list { display: grid; gap: 12px; }
+.staging-item, .source-item, .merge-form { padding: 18px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+.staging-item-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.staging-item h2, .source-item h2, .merge-form h2 { margin: 3px 0 0; font-size: 18px; overflow-wrap: anywhere; }
+.status-chip { display: inline-flex; flex: none; padding: 5px 8px; border-radius: 999px; background: #f7e8bf; color: #725500; font-size: 12px; font-weight: 800; }
+.status-chip.is-enabled { background: #dcefe9; color: #0f6b4e; }
+.staging-item dl, .source-item dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; margin: 16px 0; }
+.staging-item dl div, .source-item dl div { min-width: 0; }
+.staging-item dt, .source-item dt { color: var(--muted); font-size: 12px; }
+.staging-item dd, .source-item dd { margin: 2px 0 0; overflow-wrap: anywhere; font-size: 14px; }
+.evidence, .blocked-source { margin: 0 0 16px; padding: 12px; border-left: 3px solid var(--teal); background: #f1f8f6; color: var(--ink); font-size: 14px; line-height: 1.45; }
+.blocked-source { border-color: var(--coral); background: #fff2ed; }
+.admin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin-actions .secondary-action { background: #fff; border: 1px solid #b8c8c4; color: var(--ink); }
+.merge-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.merge-form > div, .merge-form > button { grid-column: 1 / -1; justify-self: start; }
+@media (max-width: 760px) { .mcc-header, .search-panel { padding-left: 14px; padding-right: 14px; } .mcc-header nav { gap: 12px; } .search-filters input, .search-filters select { width: calc(50% - 4px); } .workspace { display: block; position: relative; } .map-region, .merchant-map { min-height: calc(100vh - 252px); } .results-sheet { max-height: 42vh; overflow: auto; border-left: 0; border-top: 1px solid var(--line); } .content-panel, .store-page { width: min(100% - 28px, 980px); margin: 14px auto; padding: 20px; } .report-form, .merge-form, .admin-links { grid-template-columns: 1fr; } .staging-item dl, .source-item dl { grid-template-columns: 1fr; } }
